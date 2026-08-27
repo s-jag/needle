@@ -312,7 +312,7 @@ async def test_parallel_joins_excerpts_and_builds_body(monkeypatch):
     assert results[0].snippet == "one\ntwo"
     assert calls["json"] == {
         "search_queries": ["hi"],
-        "mode": "basic",
+        "mode": "advanced",
         "advanced_settings": {"max_results": 5},
     }
     assert calls["headers"] == {"x-api-key": "k"}

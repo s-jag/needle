@@ -12,7 +12,7 @@ class ParallelClient(HttpSearchClient):
         self,
         *,
         api_key: str,
-        mode: str = "basic",
+        mode: str = "advanced",
         excerpt_chars: int = 0,
         timeout_s: float = 60.0,
     ) -> None:
