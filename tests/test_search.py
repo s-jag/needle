@@ -319,13 +319,13 @@ async def test_parallel_joins_excerpts_and_builds_body(monkeypatch):
 
 
 async def test_parallel_sends_excerpt_budget(monkeypatch):
-    c = ParallelClient(api_key="k", excerpt_chars=500)
+    c = ParallelClient(api_key="k", excerpt_chars=2000)
     fake, calls = _canned({"results": []})
     monkeypatch.setattr(c, "_request_json", fake)
     await c.search("hi", num_results=5)
     assert calls["json"]["advanced_settings"] == {
         "max_results": 5,
-        "excerpt_settings": {"max_chars_per_result": 500},
+        "excerpt_settings": {"max_chars_per_result": 2000},
     }
 
 
@@ -609,18 +609,18 @@ def test_factory_builds_engine_variants(monkeypatch):
     monkeypatch.setenv("PARALLEL_API_KEY", "pk")
     clients = build_search_clients(
         ["keenable", "keenable-realtime", "exa", "exa-instant", "parallel", "parallel-turbo"],
-        snippet_chars=500,
+        snippet_chars=2000,
     )
     assert isinstance(clients["keenable-realtime"], KeenableClient)
     assert clients["keenable"].mode == "pro"
-    assert clients["keenable"].snippet_chars == 500
+    assert clients["keenable"].snippet_chars == 2000
     assert clients["keenable-realtime"].mode == "realtime"
     assert isinstance(clients["exa-instant"], ExaClient)
     assert clients["exa"].search_type == "auto"
     assert clients["exa-instant"].search_type == "instant"
     assert isinstance(clients["parallel-turbo"], ParallelClient)
     assert clients["parallel"].mode == "advanced"
-    assert clients["parallel"].excerpt_chars == 500
+    assert clients["parallel"].excerpt_chars == 2000
     assert clients["parallel-turbo"].mode == "turbo"
 
 
