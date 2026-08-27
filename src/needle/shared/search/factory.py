@@ -58,7 +58,7 @@ def _build_brave(api_key: str | None, snippet_chars: int) -> SearchClient:
 
 def _build_parallel(mode: str) -> Callable[[str | None, int], SearchClient]:
     def build(api_key: str | None, snippet_chars: int) -> SearchClient:
-        return ParallelClient(api_key=api_key or "", mode=mode)
+        return ParallelClient(api_key=api_key or "", mode=mode, excerpt_chars=snippet_chars)
 
     return build
 
