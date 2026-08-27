@@ -8,15 +8,25 @@ class ParallelClient(HttpSearchClient):
     engine = "parallel"
     base_url = "https://api.parallel.ai"
 
-    def __init__(self, *, api_key: str, mode: str = "basic", timeout_s: float = 60.0) -> None:
+    def __init__(
+        self,
+        *,
+        api_key: str,
+        mode: str = "basic",
+        excerpt_chars: int = 0,
+        timeout_s: float = 60.0,
+    ) -> None:
         super().__init__(api_key=api_key, timeout_s=timeout_s)
         self.mode = mode
+        self.excerpt_chars = excerpt_chars
 
     async def search(
         self, query: str, *, num_results: int = 10
     ) -> tuple[list[SearchResult] | None, dict[str, str] | None]:
         ops = parse_ops(query)
         advanced: dict[str, Any] = {"max_results": num_results}
+        if self.excerpt_chars > 0:
+            advanced["excerpt_settings"] = {"max_chars_per_result": self.excerpt_chars}
         policy: dict[str, Any] = {}
         if ops.sites:
             policy["include_domains"] = list(ops.sites)

@@ -318,6 +318,17 @@ async def test_parallel_joins_excerpts_and_builds_body(monkeypatch):
     assert calls["headers"] == {"x-api-key": "k"}
 
 
+async def test_parallel_sends_excerpt_budget(monkeypatch):
+    c = ParallelClient(api_key="k", excerpt_chars=500)
+    fake, calls = _canned({"results": []})
+    monkeypatch.setattr(c, "_request_json", fake)
+    await c.search("hi", num_results=5)
+    assert calls["json"]["advanced_settings"] == {
+        "max_results": 5,
+        "excerpt_settings": {"max_chars_per_result": 500},
+    }
+
+
 async def test_tavily_maps_fields_and_builds_body(monkeypatch):
     payload = {
         "results": [
@@ -609,6 +620,7 @@ def test_factory_builds_engine_variants(monkeypatch):
     assert clients["exa-instant"].search_type == "instant"
     assert isinstance(clients["parallel-turbo"], ParallelClient)
     assert clients["parallel"].mode == "advanced"
+    assert clients["parallel"].excerpt_chars == 500
     assert clients["parallel-turbo"].mode == "turbo"
 
 
